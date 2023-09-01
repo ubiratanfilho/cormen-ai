@@ -11,13 +11,12 @@ const AppContainer = styled.div`
   background-image: linear-gradient(90deg, #002F52 35%, #326589 100%);
 `
 
-
 function App() {
   return (
     <Router>
       <AppContainer>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/publicar" element={<Publicar />} />

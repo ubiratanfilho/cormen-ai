@@ -1,7 +1,7 @@
 import styled from 'styled-components';
+import {Link} from 'react-router-dom';
 
-
-const Opcao = styled.li`
+const Opcao = styled(Link)`
   min-width: 120px;
   font-size: 16px;
   justify-content: center;
@@ -17,15 +17,17 @@ const Opcoes = styled.ul`
   display: flex;
 `
 
-const textoOpcoes = ['LOGIN', 'CADASTRO', 'PUBLICAR'];
+const Links = ['HOME', 'LOGIN', 'CADASTRO', 'PUBLICAR'];
 
 
 function OpcoesHeader(){
     return (
         <Opcoes>
-          {textoOpcoes.map( (texto) => (
-            <Opcao><p>{texto}</p></Opcao>
-          ) ) }
+            {Links.map((link) => (
+                <Opcao to={`/${link.toLowerCase()}`}>
+                    <li>{link}</li>
+                </Opcao>
+            ))}
         </Opcoes>
     )
 }
