@@ -1,7 +1,9 @@
-import Header from './componentes/Header';
 import styled from 'styled-components';
-import Pesquisa from './componentes/Pesquisa';
-import UltimosLancamentos from './componentes/Noticias';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Cadastro from './pages/Cadastro';
+import Publicar from './pages/Publicar';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const AppContainer = styled.div`
   width: 100vw;
@@ -12,11 +14,16 @@ const AppContainer = styled.div`
 
 function App() {
   return (
-    <AppContainer>
-      <Header />
-      <Pesquisa />
-      <UltimosLancamentos />
-    </AppContainer>
+    <Router>
+      <AppContainer>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/publicar" element={<Publicar />} />
+        </Routes>
+      </AppContainer>
+    </Router>
   );
 }
 

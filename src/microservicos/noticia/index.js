@@ -96,24 +96,17 @@ async function consumeArticleUpdateMessages() {
 
 consumeArticleUpdateMessages().catch(console.error);
 
-// get the article according to the id
 app.get('/articles', async (req, res) => {
-  const { id } = req.params;
   // send message to RabbitMQ queue
   const connection = await amqp.connect('amqp://localhost');
   const channel = await connection.createChannel();
   const queueName = 'articleGetQueue';
   await channel.assertQueue(queueName);
   // send id to queue
-  await channel.sendToQueue(queueName, Buffer.from(JSON.stringify({ id })));
+  await channel.sendToQueue(queueName, Buffer.from(JSON.stringify('1')));
   await channel.close();
   await connection.close();
 
-  res.sendStatus(204);
-});
-
-// consume messages from RabbitMQ queue and get the article in the database
-async function consumeArticleGetMessages() {
   const client = new Client({
     host: "localhost",
     user: "postgres",
@@ -123,32 +116,40 @@ async function consumeArticleGetMessages() {
   });
   await client.connect();
 
+  const rows = [];
+
+  const result = await client.query('SELECT * FROM noticias');
+  // create a loop to store all rows
+  for (let row of result.rows) {
+    rows.push(row);
+  }
+
+  res.status(200).json(rows);
+});
+
+// consume messages from RabbitMQ queue and get the article in the database
+async function consumeArticleGetMessages() {
   const queueName = 'articleGetQueue';
   const connection = await amqp.connect('amqp://localhost');
   const channel = await connection.createChannel();
   await channel.assertQueue(queueName);
 
-  const rows = [];
-
   await channel.consume(queueName, async (message) => {
     const { id } = JSON.parse(message.content.toString());
+    const client = new Client({
+      host: "localhost",
+      user: "postgres",
+      password: "CormenA!**",
+      database: "cormenai",
+      port: 5432
+    });
+    await client.connect();
     const result = await client.query('SELECT * FROM noticias');
-    // create a loop to store all rows
-    for (let row of result.rows) {
-      rows.push(row);
-    }
-    // return the rows as response
-    console.log(`Article get: ${JSON.stringify(rows)}`);
-
+    const article = result.rows[0];
     channel.ack(message);
   });
 
   console.log('Waiting for article get messages...');
-
-  // send rows as response
-  app.get('/articles', async (req, res) => {
-    res.status(200).json(rows);
-  });
 }
 
 consumeArticleGetMessages();
