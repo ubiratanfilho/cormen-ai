@@ -4,7 +4,7 @@ const { Client } = require('pg');
 const amqp = require('amqplib');
 
 const app = express();
-const port = 3000;
+const port = 4000;
 
 app.use(bodyParser.json());
 
@@ -30,7 +30,7 @@ async function consumeMessages() {
   const client = new Client({
     host: "localhost",
     user: "postgres",
-    password: "UJ10000",
+    password: "CormenA!**",
     database: "cormenai",
     port: 5432
   });
@@ -74,7 +74,7 @@ async function consumeArticleUpdateMessages() {
   const client = new Client({
     host: "localhost",
     user: "postgres",
-    password: "UJ10000",
+    password: "CormenA!**",
     database: "cormenai",
     port: 5432
   });
@@ -97,7 +97,7 @@ async function consumeArticleUpdateMessages() {
 consumeArticleUpdateMessages().catch(console.error);
 
 // get the article according to the id
-app.get('/articles/:id', async (req, res) => {
+app.get('/articles', async (req, res) => {
   const { id } = req.params;
   // send message to RabbitMQ queue
   const connection = await amqp.connect('amqp://localhost');
@@ -117,7 +117,7 @@ async function consumeArticleGetMessages() {
   const client = new Client({
     host: "localhost",
     user: "postgres",
-    password: "UJ10000",
+    password: "CormenA!**",
     database: "cormenai",
     port: 5432
   });
@@ -127,19 +127,34 @@ async function consumeArticleGetMessages() {
   const connection = await amqp.connect('amqp://localhost');
   const channel = await connection.createChannel();
   await channel.assertQueue(queueName);
+
+  const rows = [];
+
   await channel.consume(queueName, async (message) => {
     const { id } = JSON.parse(message.content.toString());
-    const result = await client.query('SELECT * FROM noticias WHERE id = $1', [id]);
-    const article = result.rows[0];
-    console.log(`Article retrieved: ${JSON.stringify(article)}`);
+    const result = await client.query('SELECT * FROM noticias');
+    // create a loop to store all rows
+    for (let row of result.rows) {
+      rows.push(row);
+    }
+    // return the rows as response
+    console.log(`Article get: ${JSON.stringify(rows)}`);
+
     channel.ack(message);
   });
 
   console.log('Waiting for article get messages...');
+
+  // send rows as response
+  app.get('/articles', async (req, res) => {
+    res.status(200).json(rows);
+  });
 }
+
+consumeArticleGetMessages();
 
 consumeArticleGetMessages().catch(console.error);
 
 app.listen(port, () => {
-  console.log('Microservice listening on port 3000');
+  console.log('Microservice listening on port ' + port);
 });

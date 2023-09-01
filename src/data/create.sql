@@ -1,5 +1,4 @@
--- Active: 1686161230680@@127.0.0.1@5432@cormenai
--- Criação das tabelas
+
 CREATE TABLE IF NOT EXISTS login (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,

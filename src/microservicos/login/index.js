@@ -30,7 +30,7 @@ async function consumeMessages() {
   const client = new Client({
     host: "localhost",
     user: "postgres",
-    password: "UJ10000",
+    password: "CormenA!**",
     database: "cormenai",
     port: 5432
   });
