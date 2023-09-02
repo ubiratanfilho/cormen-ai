@@ -16,7 +16,7 @@ function App() {
     <Router>
       <AppContainer>
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} index />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/publicar" element={<Publicar />} />
