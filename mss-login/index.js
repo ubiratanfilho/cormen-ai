@@ -2,12 +2,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Client } = require('pg');
+const cors = require('cors');
 
 const app = express();
 
 const port = 3002;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 // Configuração do banco de dados
 const client = new Client({
@@ -60,7 +62,7 @@ app.post('/login/check', async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-            res.status(401).send('Usuário ou senha incorretos!');
+            res.status(201).send('Usuário ou senha incorretos!');
         } else {
             res.status(200).send('Login realizado com sucesso!');
         }

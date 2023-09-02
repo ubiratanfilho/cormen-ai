@@ -5,10 +5,10 @@ const { Client } = require('pg');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
 const port = 3001;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 // Configuração do banco de dados
 const client = new Client({

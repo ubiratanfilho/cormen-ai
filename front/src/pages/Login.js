@@ -1,6 +1,8 @@
 import Header from '../componentes/Header';
 import styled from 'styled-components';
 import Input from '../componentes/Input';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const LoginContainer = styled.div`
     width: 100vw;
@@ -32,14 +34,39 @@ const LoginButton = styled.button`
     }
 `;
 
+const Resposta = styled.h2`
+    color: #FFF;
+    font-size: 20px;
+    margin-left: 20px;
+    margin-bottom: 40px;
+`
+
 function Login() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [response, setResponse] = useState("");
+
+    const handleLogin = () => {
+        console.log(username, password)
+        axios.post("http://localhost:3002/login/check", {
+            username: username,
+            password: password
+        }).then(response => {
+            setResponse(response.data);
+            console.log(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
     return (
         <LoginContainer>
             <Header />
                 <LoginTitulo>Login</LoginTitulo>
-                <Input placeholder="Usuário" />
-                <Input placeholder="Senha" />
-                <LoginButton>Entrar</LoginButton>
+                <Input placeholder="Usuário" onChange={(event) => setUsername(event.target.value)} />
+                <Input placeholder="Senha" onChange={(event) => setPassword(event.target.value)} />
+                <LoginButton onClick={handleLogin}>Entrar</LoginButton>
+                <Resposta>{response}</Resposta>
         </LoginContainer>
     );
 }
