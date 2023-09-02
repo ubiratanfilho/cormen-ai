@@ -1,5 +1,6 @@
-import { noticias } from "./dadosUltimosLancementos";
 import styled from "styled-components";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const NoticiasContainer = styled.div`
   background-image: #fff;
@@ -11,6 +12,18 @@ const NoticiasContainer = styled.div`
 `;
 
 function UltimosLancamentos() {
+  const [noticias, setNoticias] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/noticias')
+      .then((response) => {
+        setNoticias(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <NoticiasContainer>
       <h1>Notícias</h1>

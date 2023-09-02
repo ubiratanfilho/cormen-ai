@@ -1,10 +1,12 @@
-// microsserviço de notícias, sem usar o RabbitMQ
+// microsserviço de notícias
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Client } = require('pg');
+const cors = require('cors');
 
 const app = express();
-const port = 4000;
+app.use(cors());
+const port = 3001;
 
 app.use(bodyParser.json());
 
