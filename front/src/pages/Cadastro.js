@@ -1,6 +1,8 @@
 import Header from '../componentes/Header';
 import styled from 'styled-components';
 import Input from '../componentes/Input';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const LoginContainer = styled.div`
     width: 100vw;
@@ -32,15 +34,41 @@ const LoginButton = styled.button`
     }
 `;
 
+const Resposta = styled.h2`
+    color: #FFF;
+    font-size: 20px;
+    margin-left: 20px;
+    margin-bottom: 40px;
+`
+
 function Cadastro() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [response, setResponse] = useState("");
+
+    const handleCadastro = () => {
+        axios.post("http://localhost:3002/login", {
+            username: username,
+            password: password,
+            email: email
+        }).then(response => {
+            console.log(response.data);
+            setResponse(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
     return (
         <LoginContainer>
             <Header />
                 <LoginTitulo>Cadastro</LoginTitulo>
-                <Input placeholder="Usuário" />
-                <Input placeholder="E-mail" />
-                <Input placeholder="Senha" />
-                <LoginButton>Criar Conta</LoginButton>
+                <Input placeholder="Usuário" onChange={(event) => setUsername(event.target.value)} />
+                <Input placeholder="E-mail" onChange={(event) => setEmail(event.target.value)} />
+                <Input placeholder="Senha" onChange={(event) => setPassword(event.target.value)} />
+                <LoginButton onClick={handleCadastro}>Cadastrar</LoginButton>
+                <Resposta>{response}</Resposta>
         </LoginContainer>
     );
 }

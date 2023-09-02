@@ -27,10 +27,17 @@ app.post('/login', async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
-        const result = await client.query(
-            'INSERT INTO login (username, email, password) VALUES ($1, $2, $3)',
-            [username, email, password]
-        );
+        if (username === "" || email === "" || password === "") {
+            res.status(201).send('Preencha todos os campos!');
+        }
+        else {
+            const result = await client.query(
+                'INSERT INTO login (username, email, password) VALUES ($1, $2, $3)',
+                [username, email, password]
+            );
+
+            res.status(201).send('Usuário inserido com sucesso!');
+        }
 
         res.status(201).send('Usuário inserido com sucesso!');
     } catch (error) {
